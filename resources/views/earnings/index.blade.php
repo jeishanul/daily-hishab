@@ -2,12 +2,12 @@
     <x-slot name="header">
         <div class="flex justify-between">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('Expenses') }}
+                {{ __('Earnings') }}
             </h2>
             <div class="flex items-center">
-                <a href="{{ route('expenses.create') }}"
+                <a href="{{ route('earnings.create') }}"
                     class="text-white hover:text-white bg-green-500 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 py-2 px-5 rounded-md">
-                    {{ __('Add New Expense') }}
+                    {{ __('Add New Earnings') }}
                 </a>
             </div>
         </div>
@@ -34,20 +34,20 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-700 divide-y divide-gray-200">
-                        @if ($expenses->isNotEmpty())
-                            @foreach ($expenses as $expense)
+                        @if ($earnings->isNotEmpty())
+                            @foreach ($earnings as $earning)
                                 <tr>
                                     <td class="px-6 text-center py-4 whitespace-nowrap">
-                                        {{ $expense->details->sum('amount') }}
+                                        {{ $earning->details->sum('amount') }}
                                     </td>
                                     <td class="px-6 text-center py-4 whitespace-nowrap">
-                                        {{ dateFormat($expense->date) }}
+                                        {{ dateFormat($earning->date) }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap flex items-center justify-center gap-2">
-                                        <a href="{{ route('expenses.show', $expense) }}"
+                                        <a href="{{ route('earnings.show', $earning) }}"
                                             class="text-blue-600 hover:text-blue-900">{{ __('Show') }}</a>
 
-                                        <form method="POST" action="{{ route('expenses.destroy', $expense) }}">
+                                        <form method="POST" action="{{ route('earnings.destroy', $earning) }}">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
@@ -59,7 +59,7 @@
                         @else
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-center" colspan="3">
-                                    {{ __('No expenses found.') }}
+                                    {{ __('No earnings found.') }}
                                 </td>
                             </tr>
                         @endif

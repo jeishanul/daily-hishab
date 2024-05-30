@@ -27,20 +27,18 @@ class ExpenseController extends Controller
             'date' => 'required|date',
         ]);
 
-        $expense =  auth()->user()->expenses()->whereDate('date', $request->date)->first();
-
-        if (!$expense) {
-            $expense = Expense::create([
-                'user_id' => auth()->id(),
+        $expense = auth()->user()->expenses()->whereDate('date', $request->date)->firstOrCreate(
+            [
                 'date' => $request->date,
-            ]);
-        }
+            ]
+        );
 
-        ExpenseDetails::create([
-            'expense_id' => $expense->id,
+        $expense->details()->create([
             'description' => $request->description,
             'amount' => $request->amount
         ]);
+
+        auth()->user()->wallet()->decrement('balance', $request->amount);
 
         return redirect()->route('expenses.index');
     }

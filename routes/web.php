@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EarningController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,17 @@ Route::middleware('auth')->group(function () {
         Route::put('/update/{expenseDetails}', 'update')->name('expenses.update');
         Route::delete('/destroy/{expense}', 'destroy')->name('expenses.destroy');
         Route::delete('destroy/details/{expenseDetails}', 'destroyExpenseDetails')->name('expenses.details.destroy');
+    });
+
+    Route::controller(EarningController::class)->prefix('earnings')->group(function () {
+        Route::get('/', 'index')->name('earnings.index');
+        Route::get('/show/{earning}', 'show')->name('earnings.show');
+        Route::get('/create', 'create')->name('earnings.create');
+        Route::post('/store', 'store')->name('earnings.store');
+        Route::get('/edit/{earningDetails}', 'edit')->name('earnings.edit');
+        Route::put('/update/{earningDetails}', 'update')->name('earnings.update');
+        Route::delete('/destroy/{earning}', 'destroy')->name('earnings.destroy');
+        Route::delete('destroy/details/{earningDetails}', 'destroyEarningDetailsDetails')->name('earnings.details.destroy');
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

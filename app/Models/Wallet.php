@@ -5,17 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ExpenseDetails extends Model
+class Wallet extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'amount',
-        'description'
+        'balance',
     ];
-
-    public function expense()
-    {
-        return $this->belongsTo(Expense::class);
-    }
 }

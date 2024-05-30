@@ -4,18 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Expense extends Model
+class EarningDetails extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'date'
+        'amount',
+        'description'
     ];
 
-    public function details(): HasMany
+    public function earning()
     {
-        return $this->hasMany(ExpenseDetails::class);
+        return $this->belongsTo(Earning::class);
     }
 }

@@ -15,12 +15,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'name' => 'Jeishanul Haque Shishir',
-            'email' => 'shishirjeishanul@gmail.com',
-            'email_verified_at' => now(),
-            'password' => Hash::make('password'),
-            'remember_token' => Str::random(10),
+        $user = User::create([
+                    'name' => 'Jeishanul Haque Shishir',
+                    'email' => 'shishirjeishanul@gmail.com',
+                    'email_verified_at' => now(),
+                    'password' => Hash::make('password'),
+                    'remember_token' => Str::random(10),
+                ]);
+
+        $user->wallet()->create([
+            'balance' => 93790
         ]);
     }
 }
