@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DueController;
 use App\Http\Controllers\EarningController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ProfileController;
@@ -34,6 +35,17 @@ Route::middleware('auth')->group(function () {
         Route::put('/update/{earningDetails}', 'update')->name('earnings.update');
         Route::delete('/destroy/{earning}', 'destroy')->name('earnings.destroy');
         Route::delete('destroy/details/{earningDetails}', 'destroyEarningDetailsDetails')->name('earnings.details.destroy');
+    });
+
+    Route::controller(DueController::class)->prefix('dues')->group(function () {
+        Route::get('/', 'index')->name('dues.index');
+        Route::get('/show/{due}', 'show')->name('dues.show');
+        Route::get('/create', 'create')->name('dues.create');
+        Route::post('/store', 'store')->name('dues.store');
+        Route::get('/edit/{dueDetails}', 'edit')->name('dues.edit');
+        Route::put('/update/{dueDetails}', 'update')->name('dues.update');
+        Route::delete('/destroy/{due}', 'destroy')->name('dues.destroy');
+        Route::delete('destroy/details/{dueDetails}', 'destroyDueDetails')->name('dues.details.destroy');
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
