@@ -42,7 +42,7 @@ class ExpenseController extends Controller
 
         $user->wallet->decrement('balance', $request->amount);
 
-        return redirect()->route('expenses.index');
+        return back()->withSuccess('Expense created successfully');
     }
 
     public function show(Expense $expense)
