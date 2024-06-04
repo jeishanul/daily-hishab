@@ -21,6 +21,10 @@
                         <tr>
                             <th scope="col"
                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {{ __('SL') }}
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Due Date') }}
                             </th>
                             <th scope="col"
@@ -38,30 +42,41 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-700 divide-y divide-gray-200">
-                        @foreach ($due->details as $details)
-                            <tr>
-                                <td class="px-6 py-4 text-center whitespace-nowrap">
-                                    {{ dateFormat($details->due_date) }}
-                                </td>
-                                <td class="px-6 py-4 text-center whitespace-nowrap">
-                                    {{ $details->take_amount }}
-                                </td>
-                                <td class="px-6 py-4 text-center whitespace-nowrap">
-                                    {{ $details->return_amount }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap flex items-center justify-center gap-2">
-                                    <a href="{{ route('dues.edit', $details) }}"
-                                        class="text-blue-600 hover:text-blue-900">{{ __('Edit') }}</a>
+                        @if ($due->details->isNotEmpty())
+                            @foreach ($due->details as $details)
+                                <tr>
+                                    <td class="px-6 py-4 text-center whitespace-nowrap">
+                                        {{ $loop->iteration }}
+                                    </td>
+                                    <td class="px-6 py-4 text-center whitespace-nowrap">
+                                        {{ dateFormat($details->due_date) }}
+                                    </td>
+                                    <td class="px-6 py-4 text-center whitespace-nowrap">
+                                        {{ currencySymbol($details->take_amount) }}
+                                    </td>
+                                    <td class="px-6 py-4 text-center whitespace-nowrap">
+                                        {{ currencySymbol($details->return_amount) }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap flex items-center justify-center gap-2">
+                                        <a href="{{ route('dues.edit', $details) }}"
+                                            class="text-blue-600 hover:text-blue-900">{{ __('Edit') }}</a>
 
-                                    <form method="POST" action="{{ route('dues.details.destroy', $details) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="text-red-600 hover:text-red-900">{{ __('Delete') }}</button>
-                                    </form>
+                                        <form method="POST" action="{{ route('dues.details.destroy', $details) }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="text-red-600 hover:text-red-900">{{ __('Delete') }}</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-center" colspan="5">
+                                    {{ __('No expenses found.') }}
                                 </td>
                             </tr>
-                        @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>

@@ -38,30 +38,39 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-700 divide-y divide-gray-200">
-                        @foreach ($expense->details as $details)
-                            <tr>
-                                <td class="px-6 py-4 text-center whitespace-nowrap">
-                                    {{ $loop->iteration }}
-                                </td>
-                                <td class="px-6 py-4 text-center whitespace-nowrap">
-                                    {{ $details->description }}
-                                </td>
-                                <td class="px-6 py-4 text-center whitespace-nowrap">
-                                    {{ currencySymbol($details->amount) }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap flex items-center justify-center gap-2">
-                                    <a href="{{ route('expenses.edit', $details) }}"
-                                        class="text-blue-600 hover:text-blue-900">{{ __('Edit') }}</a>
+                        @if ($expense->details->isNotEmpty())
+                            @foreach ($expense->details as $details)
+                                <tr>
+                                    <td class="px-6 py-4 text-center whitespace-nowrap">
+                                        {{ $loop->iteration }}
+                                    </td>
+                                    <td class="px-6 py-4 text-center whitespace-nowrap">
+                                        {{ $details->description }}
+                                    </td>
+                                    <td class="px-6 py-4 text-center whitespace-nowrap">
+                                        {{ currencySymbol($details->amount) }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap flex items-center justify-center gap-2">
+                                        <a href="{{ route('expenses.edit', $details) }}"
+                                            class="text-blue-600 hover:text-blue-900">{{ __('Edit') }}</a>
 
-                                    <form method="POST" action="{{ route('expenses.details.destroy', $details) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="text-red-600 hover:text-red-900">{{ __('Delete') }}</button>
-                                    </form>
+                                        <form method="POST"
+                                            action="{{ route('expenses.details.destroy', $details) }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="text-red-600 hover:text-red-900">{{ __('Delete') }}</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-center" colspan="4">
+                                    {{ __('No expenses found.') }}
                                 </td>
                             </tr>
-                        @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>

@@ -21,6 +21,10 @@
                         <tr>
                             <th scope="col"
                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {{ __('SL') }}
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Name') }}
                             </th>
                             <th scope="col"
@@ -41,14 +45,17 @@
                         @if ($dues->isNotEmpty())
                             @foreach ($dues as $due)
                                 <tr>
+                                    <td class="px-6 py-4 text-center whitespace-nowrap">
+                                        {{ $loop->iteration }}
+                                    </td>
                                     <td class="px-6 text-center py-4 whitespace-nowrap">
                                         {{ $due->name }}
                                     </td>
                                     <td class="px-6 text-center py-4 whitespace-nowrap">
-                                        {{ $due->details->sum('take_amount') }}
+                                        {{ currencySymbol($due->details->sum('take_amount')) }}
                                     </td>
                                     <td class="px-6 text-center py-4 whitespace-nowrap">
-                                        {{ $due->details->sum('return_amount') }}
+                                        {{ currencySymbol($due->details->sum('return_amount')) }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap flex items-center justify-center gap-2">
                                         <a href="{{ route('dues.show', $due) }}"
@@ -65,7 +72,7 @@
                             @endforeach
                         @else
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-center" colspan="4">
+                                <td class="px-6 py-4 whitespace-nowrap text-center" colspan="5">
                                     {{ __('No Dues found.') }}
                                 </td>
                             </tr>

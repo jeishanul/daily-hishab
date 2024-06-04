@@ -10,7 +10,7 @@ class DueController extends Controller
 {
     public function index()
     {
-        $dues = auth()->user()->dues()->with('details')->get();
+        $dues = auth()->user()->dues()->with('details')->orderByDesc('id')->get();
         return view('dues.index', compact('dues'));
     }
 
@@ -27,7 +27,9 @@ class DueController extends Controller
             'due_date' => 'required|date',
         ]);
 
-        $due = auth()->user()->dues()->where('name', $request->name)->firstOrCreate([
+        $user = auth()->user();
+
+        $due = $user->dues()->where('name', $request->name)->firstOrCreate([
             'name' => $request->name
         ]);
 
@@ -38,7 +40,7 @@ class DueController extends Controller
 
         ]);
 
-        auth()->user()->wallet()->decrement('balance', $request->take_amount);
+        $user->wallet->decrement('balance', $request->take_amount);
 
         return redirect()->route('dues.index');
     }
@@ -59,28 +61,39 @@ class DueController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'take_amount' => 'required|numeric',
+            'return_amount' => 'required|numeric',
             'due_date' => 'required|date',
         ]);
+
+        $wallet = auth()->user()->wallet;
+        $wallet->increment('balance', $dueDetails->take_amount - $request->take_amount);
+        $wallet->decrement('balance', $dueDetails->return_amount - $request->return_amount);
 
         $dueDetails->update([
             'due_date' => $request->due_date,
             'take_amount' => $request->take_amount,
-            'return_amount' => 0
+            'return_amount' => $request->return_amount
         ]);
-
-        auth()->user()->wallet()->decrement('balance', $request->take_amount);
 
         return redirect()->route('dues.index');
     }
 
     public function destroy(Due $due)
     {
+        $wallet = auth()->user()->wallet;
+        $wallet->increment('balance', $due->details()->sum('take_amount'));
+        $wallet->decrement('balance', $due->details()->sum('return_amount'));
+
         $due->delete();
         return redirect()->route('dues.index');
     }
 
     public function destroyDueDetails(DueDetails $dueDetails)
     {
+        $wallet = auth()->user()->wallet;
+        $wallet->increment('balance', $dueDetails->take_amount);
+        $wallet->decrement('balance', $dueDetails->return_amount);
+
         $dueDetails->delete();
         return redirect()->route('dues.index');
     }
