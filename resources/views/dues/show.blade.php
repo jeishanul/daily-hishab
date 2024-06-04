@@ -25,11 +25,11 @@
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Due Date') }}
+                                {{ __('Take Amount') }}
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Take Amount') }}
+                                {{ __('Due Date') }}
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -43,16 +43,24 @@
                     </thead>
                     <tbody class="bg-white dark:bg-gray-700 divide-y divide-gray-200">
                         @if ($due->details->isNotEmpty())
+                            @php
+                                $total_take_amount = 0;
+                                $total_return_amount = 0;
+                            @endphp
                             @foreach ($due->details as $details)
+                                @php
+                                    $total_take_amount += $details->take_amount;
+                                    $total_return_amount += $details->return_amount;
+                                @endphp
                                 <tr>
                                     <td class="px-6 py-4 text-center whitespace-nowrap">
                                         {{ $loop->iteration }}
                                     </td>
                                     <td class="px-6 py-4 text-center whitespace-nowrap">
-                                        {{ dateFormat($details->due_date) }}
+                                        {{ currencySymbol($details->take_amount) }}
                                     </td>
                                     <td class="px-6 py-4 text-center whitespace-nowrap">
-                                        {{ currencySymbol($details->take_amount) }}
+                                        {{ dateFormat($details->due_date) }}
                                     </td>
                                     <td class="px-6 py-4 text-center whitespace-nowrap">
                                         {{ currencySymbol($details->return_amount) }}
@@ -70,10 +78,24 @@
                                     </td>
                                 </tr>
                             @endforeach
+                            <tr class="bg-gray-100 dark:bg-gray-800">
+                                <td class="px-6 py-4 whitespace-nowrap text-center font-semibold text-md">
+                                    {{ __('Total Take Amount:') }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-md">
+                                    {{ currencySymbol($total_take_amount) }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center font-semibold text-md">
+                                    {{ __('Total Return Amount:') }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-md">
+                                    {{ currencySymbol($total_return_amount) }}
+                                </td>
+                            </tr>
                         @else
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-center" colspan="5">
-                                    {{ __('No expenses found.') }}
+                                    {{ __('No dues found.') }}
                                 </td>
                             </tr>
                         @endif

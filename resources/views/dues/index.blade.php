@@ -23,10 +23,7 @@
                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('SL') }}
                             </th>
-                            <th scope="col"
-                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Name') }}
-                            </th>
+
                             <th scope="col"
                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Take Amount') }}
@@ -37,22 +34,34 @@
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {{ __('Name') }}
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Actions') }}
                             </th>
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-700 divide-y divide-gray-200">
                         @if ($dues->isNotEmpty())
+                            @php
+                                $total_take_amount = 0;
+                                $total_return_amount = 0;
+                            @endphp
                             @foreach ($dues as $due)
+                                @php
+                                    $total_take_amount += $due->details->sum('take_amount');
+                                    $total_return_amount += $due->details->sum('return_amount');
+                                @endphp
                                 <tr>
                                     <td class="px-6 py-4 text-center whitespace-nowrap">
                                         {{ $loop->iteration }}
                                     </td>
                                     <td class="px-6 text-center py-4 whitespace-nowrap">
-                                        {{ $due->name }}
+                                        {{ currencySymbol($due->details->sum('take_amount')) }}
                                     </td>
                                     <td class="px-6 text-center py-4 whitespace-nowrap">
-                                        {{ currencySymbol($due->details->sum('take_amount')) }}
+                                        {{ $due->name }}
                                     </td>
                                     <td class="px-6 text-center py-4 whitespace-nowrap">
                                         {{ currencySymbol($due->details->sum('return_amount')) }}
@@ -70,10 +79,24 @@
                                     </td>
                                 </tr>
                             @endforeach
+                            <tr class="bg-gray-100 dark:bg-gray-800">
+                                <td class="px-6 py-4 whitespace-nowrap text-center font-semibold text-md">
+                                    {{ __('Total Take Amount:') }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-md">
+                                    {{ currencySymbol($total_take_amount) }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center font-semibold text-md">
+                                    {{ __('Total Return Amount:') }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-md">
+                                    {{ currencySymbol($total_return_amount) }}
+                                </td>
+                            </tr>
                         @else
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-center" colspan="5">
-                                    {{ __('No Dues found.') }}
+                                    {{ __('No dues found.') }}
                                 </td>
                             </tr>
                         @endif

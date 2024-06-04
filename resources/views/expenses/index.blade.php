@@ -39,7 +39,9 @@
                     </thead>
                     <tbody class="bg-white dark:bg-gray-700 divide-y divide-gray-200">
                         @if ($expenses->isNotEmpty())
+                            @php($total = 0)
                             @foreach ($expenses as $expense)
+                                @php($total += $expense->details->sum('amount'))
                                 <tr>
                                     <td class="px-6 py-4 text-center whitespace-nowrap">
                                         {{ $loop->iteration }}
@@ -63,6 +65,15 @@
                                     </td>
                                 </tr>
                             @endforeach
+                            <tr class="bg-gray-100 dark:bg-gray-800">
+                                <td class="px-6 py-4 whitespace-nowrap text-center font-semibold text-md"
+                                    colspan="1">
+                                    {{ __('Total Expense Amount:') }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-md">
+                                    {{ currencySymbol($total) }}
+                                </td>
+                            </tr>
                         @else
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-center" colspan="4">

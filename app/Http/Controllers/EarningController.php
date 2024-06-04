@@ -10,7 +10,7 @@ class EarningController extends Controller
 {
     public function index()
     {
-        $earnings = auth()->user()->earnings()->with('details')->orderByDesc('date')->get();
+        $earnings = auth()->user()->earnings()->with('details')->orderBy('date','asc')->get();
         return view('earnings.index', compact('earnings'));
     }
 

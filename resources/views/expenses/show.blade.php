@@ -25,11 +25,11 @@
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Description') }}
+                                {{ __('Amount') }}
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Amount') }}
+                                {{ __('Description') }}
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -39,16 +39,18 @@
                     </thead>
                     <tbody class="bg-white dark:bg-gray-700 divide-y divide-gray-200">
                         @if ($expense->details->isNotEmpty())
+                            @php($total = 0)
                             @foreach ($expense->details as $details)
+                                @php($total += $details->amount)
                                 <tr>
                                     <td class="px-6 py-4 text-center whitespace-nowrap">
                                         {{ $loop->iteration }}
                                     </td>
                                     <td class="px-6 py-4 text-center whitespace-nowrap">
-                                        {{ $details->description }}
+                                        {{ currencySymbol($details->amount) }}
                                     </td>
                                     <td class="px-6 py-4 text-center whitespace-nowrap">
-                                        {{ currencySymbol($details->amount) }}
+                                        {{ $details->description }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap flex items-center justify-center gap-2">
                                         <a href="{{ route('expenses.edit', $details) }}"
@@ -64,6 +66,15 @@
                                     </td>
                                 </tr>
                             @endforeach
+                            <tr class="bg-gray-100 dark:bg-gray-800">
+                                <td class="px-6 py-4 whitespace-nowrap text-center font-semibold text-md"
+                                    colspan="1">
+                                    {{ __('Total Expense Amount:') }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-md">
+                                    {{ currencySymbol($total) }}
+                                </td>
+                            </tr>
                         @else
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-center" colspan="4">

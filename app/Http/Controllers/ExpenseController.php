@@ -10,7 +10,7 @@ class ExpenseController extends Controller
 {
     public function index()
     {
-        $expenses = auth()->user()->expenses()->with('details')->orderByDesc('date')->get();
+        $expenses = auth()->user()->expenses()->with('details')->orderBy('date','asc')->get();
         return view('expenses.index', compact('expenses'));
     }
 
