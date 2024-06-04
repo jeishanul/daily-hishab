@@ -21,6 +21,10 @@
                         <tr>
                             <th scope="col"
                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {{ __('SL') }}
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Description') }}
                             </th>
                             <th scope="col"
@@ -37,10 +41,13 @@
                         @foreach ($expense->details as $details)
                             <tr>
                                 <td class="px-6 py-4 text-center whitespace-nowrap">
+                                    {{ $loop->iteration }}
+                                </td>
+                                <td class="px-6 py-4 text-center whitespace-nowrap">
                                     {{ $details->description }}
                                 </td>
                                 <td class="px-6 py-4 text-center whitespace-nowrap">
-                                    {{ $details->amount }}
+                                    {{ currencySymbol($details->amount) }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap flex items-center justify-center gap-2">
                                     <a href="{{ route('expenses.edit', $details) }}"

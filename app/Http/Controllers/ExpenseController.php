@@ -10,7 +10,7 @@ class ExpenseController extends Controller
 {
     public function index()
     {
-        $expenses = auth()->user()->expenses()->with('details')->get();
+        $expenses = auth()->user()->expenses()->with('details')->orderByDesc('date')->get();
         return view('expenses.index', compact('expenses'));
     }
 
@@ -27,7 +27,9 @@ class ExpenseController extends Controller
             'date' => 'required|date',
         ]);
 
-        $expense = auth()->user()->expenses()->whereDate('date', $request->date)->firstOrCreate(
+        $user = auth()->user();
+
+        $expense = $user->expenses()->whereDate('date', $request->date)->firstOrCreate(
             [
                 'date' => $request->date,
             ]
@@ -38,7 +40,7 @@ class ExpenseController extends Controller
             'amount' => $request->amount
         ]);
 
-        auth()->user()->wallet()->decrement('balance', $request->amount);
+        $user->wallet->decrement('balance', $request->amount);
 
         return redirect()->route('expenses.index');
     }
@@ -61,6 +63,10 @@ class ExpenseController extends Controller
             'amount' => 'required|numeric'
         ]);
 
+        $wallet = auth()->user()->wallet;
+        $wallet->increment('balance', $expenseDetails->amount);
+        $wallet->decrement('balance', $request->amount);
+
         $expenseDetails->update([
             'description' => $request->description,
             'amount' => $request->amount
@@ -71,12 +77,14 @@ class ExpenseController extends Controller
 
     public function destroy(Expense $expense)
     {
+        auth()->user()->wallet->increment('balance', $expense->details()->sum('amount'));
         $expense->delete();
         return redirect()->route('expenses.index');
     }
 
     public function destroyExpenseDetails(ExpenseDetails $expenseDetails)
     {
+        auth()->user()->wallet->increment('balance', $expenseDetails->amount);
         $expenseDetails->delete();
         return redirect()->route('expenses.index');
     }
