@@ -10,7 +10,7 @@ class EarningController extends Controller
 {
     public function index()
     {
-        $earnings = auth()->user()->earnings()->with('details')->get();
+        $earnings = auth()->user()->earnings()->with('details')->orderByDesc('date')->get();
         return view('earnings.index', compact('earnings'));
     }
 
@@ -27,7 +27,9 @@ class EarningController extends Controller
             'date' => 'required|date',
         ]);
 
-        $earning = auth()->user()->earnings()->whereDate('date', $request->date)->firstOrCreate(
+        $user = auth()->user();
+
+        $earning = $user->earnings()->whereDate('date', $request->date)->firstOrCreate(
             [
                 'date' => $request->date,
             ]
@@ -38,7 +40,7 @@ class EarningController extends Controller
             'amount' => $request->amount
         ]);
 
-        auth()->user()->wallet()->increment('balance', $request->amount);
+        $user->wallet()->increment('balance', $request->amount);
 
         return redirect()->route('earnings.index');
     }
@@ -61,6 +63,10 @@ class EarningController extends Controller
             'amount' => 'required|numeric'
         ]);
 
+        $wallet = auth()->user()->wallet;
+        $wallet->decrement('balance', $earningDetails->amount);
+        $wallet->increment('balance', $request->amount);
+
         $earningDetails->update([
             'description' => $request->description,
             'amount' => $request->amount
@@ -71,12 +77,14 @@ class EarningController extends Controller
 
     public function destroy(Earning $earning)
     {
+        auth()->user()->wallet->decrement('balance', $earning->details()->sum('amount'));
         $earning->delete();
         return redirect()->route('earnings.index');
     }
 
     public function destroyEarningDetailsDetails(EarningDetails $earningDetails)
     {
+        auth()->user()->wallet->decrement('balance', $earningDetails->amount);
         $earningDetails->delete();
         return redirect()->route('earnings.index');
     }

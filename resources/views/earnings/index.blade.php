@@ -21,6 +21,10 @@
                         <tr>
                             <th scope="col"
                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {{ __('SL') }}
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Amount') }}
                             </th>
                             <th scope="col"
@@ -37,8 +41,11 @@
                         @if ($earnings->isNotEmpty())
                             @foreach ($earnings as $earning)
                                 <tr>
+                                    <td class="px-6 py-4 text-center whitespace-nowrap">
+                                        {{ $loop->iteration }}
+                                    </td>
                                     <td class="px-6 text-center py-4 whitespace-nowrap">
-                                        {{ $earning->details->sum('amount') }}
+                                        {{ currencySymbol($earning->details->sum('amount')) }}
                                     </td>
                                     <td class="px-6 text-center py-4 whitespace-nowrap">
                                         {{ dateFormat($earning->date) }}
@@ -58,7 +65,7 @@
                             @endforeach
                         @else
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-center" colspan="3">
+                                <td class="px-6 py-4 whitespace-nowrap text-center" colspan="4">
                                     {{ __('No earnings found.') }}
                                 </td>
                             </tr>
