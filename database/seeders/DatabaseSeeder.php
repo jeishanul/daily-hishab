@@ -19,12 +19,12 @@ class DatabaseSeeder extends Seeder
             'name' => 'Jeishanul Haque Shishir',
             'email' => 'shishirjeishanul@gmail.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('password'),
+            'password' => Hash::make('@haque511.com'),
             'remember_token' => Str::random(10),
         ]);
 
         $user->wallet()->create([
-            'balance' => 10000
+            'balance' => 55541
         ]);
     }
 }
