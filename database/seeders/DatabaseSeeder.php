@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $user->wallet()->create([
-            'balance' => 55541
+            'balance' => 55571
         ]);
     }
 }
